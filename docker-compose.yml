@@ -22,7 +22,7 @@ services:
     depends_on:
       - fivesec-nginx
   opensearch-node-1:
-    image: opensearchproject/opensearch:2.19.1
+    image: opensearchproject/opensearch:3.1.0
     container_name: opensearch-node-1
     environment:
       - node.name=opensearch-node-1
@@ -59,7 +59,7 @@ services:
     user: "1000:1000"
 
   opensearch-node-2:
-    image: opensearchproject/opensearch:2.19.1
+    image: opensearchproject/opensearch:3.1.0
     container_name: opensearch-node-2
     environment:
       - node.name=opensearch-node-2
@@ -93,7 +93,7 @@ services:
     user: "1000:1000"
 
   opensearch-dashboards:
-    image: opensearchproject/opensearch-dashboards:2.19.1
+    image: opensearchproject/opensearch-dashboards:3.1.0
     container_name: opensearch-dashboards
     ports:
       - 5601:5601
