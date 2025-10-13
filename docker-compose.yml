@@ -105,7 +105,7 @@ services:
       - "5601"
     volumes:
       - "./certs:/usr/share/opensearch-dashboards/config/certificates:ro"
-      - "./os-config/opensearch-dashboards.yml:/usr/share/opensearch-dashboards/config/opensearch-dashboards.yml"
+      - "./os-config/opensearch-dashboards.yml:/usr/share/opensearch-dashboards/config/opensearch_dashboards.yml"
     networks:
       - opensearch-net
     user: "1000:1000"
