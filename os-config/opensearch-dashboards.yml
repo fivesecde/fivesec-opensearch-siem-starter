@@ -10,5 +10,14 @@ opensearch.hosts: ["https://opensearch-node-1:9200", "https://opensearch-node-2:
 opensearch.ssl.certificateAuthorities: ["/usr/share/opensearch-dashboards/config/certificates/root-ca.pem"]
 opensearch.requestHeadersAllowlist: [ authorization,securitytenant ]
 opensearch.ssl.verificationMode: full
+
 opensearch_security.cookie.secure: true
 opensearch_security.multitenancy.enabled: false
+
+# new features
+# Set the value to true to enable multiple data source feature
+data_source.enabled: true
+# Set the value to true to enable workspace feature
+workspace.enabled: true
+# Set the value to true to enable explore feature
+explore.enabled: true

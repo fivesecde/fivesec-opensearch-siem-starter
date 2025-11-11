@@ -28,7 +28,7 @@ Fivesec-Opensearch-SIEM-starter provides an Opensearch SIEM system with logstash
 
 Ensure you have Docker and the Docker Compose plugin installed on your system.
 
-### Initial Setup
+### Generate Certificates
 
 Since OpenSearch is configured to use TLS, you’ll need to generate certificates before launching the stack. This script also sets the required Docker volumes and permissions.
 
@@ -36,9 +36,43 @@ Since OpenSearch is configured to use TLS, you’ll need to generate certificate
 ./make_certs.sh
 ```
 
-### Opensearch Docker Requirements
+### Configure Administrator Password
 
+Important: Replace "your_secure_password" with a strong password of your choice.
+The script will output a hash. Copy this hash and add it to ./os-config/security/internal_users.yml:
+```bash
+create_admin_password.sh "your secure password"
+```
+
+script. The output will be the hash you have to add to the ./os-config/security/internal_users.yml file like:
+
+```yaml
+admin:
+  hash: "your hash goes here"
+  reserved: true
+  backend_roles:
+    - "admin"
+  description: "Demo admin user"
+```
+
+Next, add your plain text password (not the hash) to your .env file:
+```text
+OPENSEARCH_ADMIN_PASSWORD=your_secure_password
+```
+
+### Opensearch Docker Requirements
+Before running OpenSearch, configure important system settings as described in the
 [Configure important host settings](https://docs.opensearch.org/docs/latest/install-and-configure/install-opensearch/docker/)
+
+On Linux, you may need to increase vm.max_map_count:
+```bash
+sudo sysctl -w vm.max_map_count=262144
+```
+
+To make this permanent:
+```bash
+echo "vm.max_map_count=262144" | sudo tee -a /etc/sysctl.conf
+```
 
 ###  Launch the Stack
 
@@ -47,9 +81,9 @@ Since OpenSearch is configured to use TLS, you’ll need to generate certificate
 ```bash
  docker compose up --build
 ```
+Wait 30–60 seconds on first boot or until you see the run securityadmin log message.
 
-Wait 30–60 seconds on first boot. Once you see the run securityadmin log message, initialize OpenSearch Security Plugin with:
-
+Once OpenSearch is running, initialize the Security Plugin with the following command (this is a single command - copy the entire line):
 ```bash
 docker compose exec opensearch-node-1 bash -c "chmod +x plugins/opensearch-security/tools/securityadmin.sh && bash plugins/opensearch-security/tools/securityadmin.sh -cd config/opensearch-security -icl -nhnv -cacert config/certificates/root-ca.pem -cert config/certificates/admin.pem -key config/certificates/admin.key -h localhost"
 ```
@@ -62,7 +96,9 @@ to have the logs searchable.
 
 ## Accessing Services
 
-Opensearch default user is `admin` and password is `admin`.  Logstash default user is `logstash` and password is `logstash`. Make sure to change it for further use.
+⚠️ Security Note
+
+Logstash default user is `logstash` and password is `logstash`. Make sure to change it for further use.
 
 ### Nginx
 Your Nginx server should now be accessible at:

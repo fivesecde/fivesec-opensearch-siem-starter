@@ -1,12 +1,12 @@
-FROM debian:stable-slim AS build
+FROM ubuntu:24.04 AS build
 
 # Install dependencies
 RUN apt update && apt upgrade -y && \
-    apt install -y build-essential wget git cmake libssl-dev libpcre3-dev zlib1g-dev libgd-dev libgeoip-dev libxslt-dev && \
+    apt install -y build-essential wget git cmake libssl-dev libpcre3-dev zlib1g-dev libgd-dev libgeoip-dev libxslt-dev adduser && \
     rm -rf /var/lib/apt/lists/*
 
 # Define Nginx version
-ARG NGINX_VERSION=1.27.4
+ARG NGINX_VERSION=1.29.3
 
 ##### IMPORTANT ABOUT ARCHITECTURE ######
 # FOR x86_64, USE -m64
@@ -87,10 +87,10 @@ RUN     export CFLAGS="-march=armv8-a -march=native -mtune=native -Ofast -flto -
     make install
 
 
-FROM debian:stable-slim
+FROM ubuntu:24.04
 
 # Install required runtime dependencies
-RUN apt update && apt install -y libssl3 libpcre3 zlib1g libgd3 libgeoip1 libxml2 && \
+RUN apt update && apt install -y libssl3 libpcre3 zlib1g libgd3 libgeoip1 libxml2 adduser && \
     rm -rf /var/lib/apt/lists/*
 
 # Copy built nginx from build stage
